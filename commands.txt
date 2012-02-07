@@ -1,0 +1,6 @@
+sword::modules
+	return dict with Name, Type
+
+sword::verse <module> <ref>
+	return referenced text from given module
+

@@ -1,8 +1,10 @@
+INC :=-I/usr/include/sword
+
 all: test.exe tclsword.dll
 
 tclsword.dll: tclmain.cpp
-	@g++ -fPIC -shared -o$@ -I/usr/include/tcl8.5 -Wall $< -ltcl8.5
+	@g++ -fPIC -shared -o$@ $(INC) -I/usr/include/tcl8.5 -Wall $< -ltcl8.5 -lsword
 
 test.exe: test.cpp
-	@g++ -o$@ -I/usr/include/sword -Wall $< -lsword
+	@g++ -o$@ $(INC) -Wall $< -lsword
 
