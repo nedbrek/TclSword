@@ -1,3 +1,5 @@
+.PHONY: all run
+
 INC :=-I/usr/include/sword
 
 all: test.exe tclsword.dll
@@ -7,4 +9,7 @@ tclsword.dll: tclmain.cpp
 
 test.exe: test.cpp
 	@g++ -o$@ $(INC) -Wall $< -lsword
+
+run: test.exe
+	@./test.exe
 
