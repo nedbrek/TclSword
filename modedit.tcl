@@ -23,5 +23,5 @@ wm withdraw .
 toplevel .tModEdit
 pack [spinbox .tModEdit.sIdx -from 1 -to 5624 -validatecommand {validIdx %P}] -side top
 pack [text    .tModEdit.tT] -side top
-.tModEdit.sIdx -validate key
+.tModEdit.sIdx configure -validate key
 
