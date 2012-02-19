@@ -80,6 +80,35 @@ int getVerseCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const o
 	return TCL_OK;
 }
 
+static
+int getDictCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
+{
+	if (objc < 3)
+	{
+		Tcl_AddErrorInfo(interp, "Usage: sword::dict <module> <entry>");
+		return TCL_ERROR;
+	}
+
+	sword::SWMgr &library = reinterpret_cast<SwordData*>(cdata)->library;
+	Parms p(interp, objv, unsigned(objc));
+
+	sword::ModMap::const_iterator modI = library.Modules.find(p.getStringParm(0));
+	if (modI == library.Modules.end())
+	{
+		Tcl_AddErrorInfo(interp, "Module not found");
+		return TCL_ERROR;
+	}
+
+	sword::SWModule *mod = modI->second;
+
+	mod->setKey(p.getStringParm(1));
+
+	const char *valTxt = mod->RenderText();
+	Tcl_SetObjResult(interp, Tcl_NewStringObj(valTxt, strlen(valTxt)));
+
+	return TCL_OK;
+}
+
 extern "C" int Tclsword_Init(Tcl_Interp *interp)
 {
 	Tcl_Namespace *ns = Tcl_CreateNamespace(interp, "sword", NULL, NULL);
@@ -88,6 +117,7 @@ extern "C" int Tclsword_Init(Tcl_Interp *interp)
 
 	Tcl_CreateObjCommand(interp, "sword::modules", modulesCmd, data, NULL);
 	Tcl_CreateObjCommand(interp, "sword::get", getVerseCmd, data, NULL);
+	Tcl_CreateObjCommand(interp, "sword::dict", getDictCmd, data, NULL);
 
 	return TCL_OK;
 }
