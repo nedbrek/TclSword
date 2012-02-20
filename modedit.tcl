@@ -76,6 +76,7 @@ proc validIdx {newVal} {
 }
 
 proc updateEntry {} {
+	sword::dictWrite $::module ""
 	sword::dictWrite $::module [.tModEdit.tT get 1.0 end]
 }
 
@@ -85,6 +86,7 @@ wm withdraw .
 toplevel .tModEdit
 pack [spinbox .tModEdit.sIdx -from 1 -to 5624 -validatecommand {validIdx %P}] -side top
 pack [text    .tModEdit.tT] -side top
+pack [button  .tModEdit.bOk -text "Ok" -command updateEntry] -side top
 .tModEdit.sIdx configure -validate key
 validIdx 1
 
