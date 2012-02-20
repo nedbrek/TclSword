@@ -71,6 +71,7 @@ proc validIdx {newVal} {
 
 	.tModEdit.tT delete 1.0 end
 	.tModEdit.tT insert end [sword::dict $::module $newVal]
+	.tModEdit.tT mark set insert 1.0
 
 	return 1
 }
