@@ -47,12 +47,12 @@ proc revGreek {s} {
 			continue
 		}
 
-		if {$e eq "s"} {
-			append ret [dict get $::revGreekDict "_s"]
+		append cur $e
+		if {$cur eq "_s"} {
+			append ret [dict get $::revGreekDict $cur]
 			set cur ""
 			continue
 		}
-		append cur $e
 		if {[string length $cur] == 3} {
 			append ret [dict get $::revGreekDict $cur]
 			set cur ""
