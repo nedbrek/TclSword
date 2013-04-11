@@ -1,4 +1,5 @@
 package require Tk
+package require tdom
 load ./tclsword.dll
 
 proc getModNames {type} {
@@ -10,6 +11,25 @@ proc getModNames {type} {
 		}
 	}
 
+	return $ret
+}
+
+proc stripHtml {t} {
+	if {[string first "<" $t] == -1} {
+		return $t
+	}
+
+	set ret ""
+
+	set doc [dom parse -html "<body>$t</body>"]
+	set root [$doc firstChild]
+	foreach n [$root childNodes] {
+		if {[$n nodeType] eq "TEXT_NODE"} {
+			append ret [$n asText]
+		}
+	}
+
+	$doc delete
 	return $ret
 }
 
@@ -30,7 +50,7 @@ bind .eRef <Return> {
 	set res [sword::get $ver $ref]
 	foreach r $res {
 		set v [dict get $r Ref]
-		set t [dict get $r Text]
+		set t [stripHtml [dict get $r Text]]
 		.tResults insert end "$ver $v $t\n"
 	}
 }
