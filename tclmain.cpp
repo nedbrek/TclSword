@@ -6,6 +6,16 @@
 struct SwordData
 {
 	sword::SWMgr library;
+
+public: // methods
+	sword::SWModule* findMod(const char *modName)
+	{
+		sword::ModMap::const_iterator i = library.Modules.find(modName);
+		if (i == library.Modules.end())
+			return NULL;
+
+		return i->second;
+	}
 };
 
 static
