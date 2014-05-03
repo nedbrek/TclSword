@@ -46,6 +46,37 @@ int modulesCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const ob
 }
 
 static
+void addERef(const sword::ListKey &l, Tcl_Interp *interp, Tcl_Obj *d)
+{
+	// new dictionary for ERef
+	Tcl_Obj *eref = Tcl_NewDictObj();
+
+	// convert the current verse reference to an expanded reference
+	sword::VerseKey vKey(l);
+
+	// pull components of the expanded reference
+	const char *tmp;
+	const char *tmpKey;
+	int tmpInt;
+
+	tmpKey = "Book";
+	tmp = vKey.getBookAbbrev();
+	Tcl_DictObjPut(interp, eref, Tcl_NewStringObj(tmpKey, strlen(tmpKey)), Tcl_NewStringObj(tmp, strlen(tmp)));
+
+	tmpKey = "Chapter";
+	tmpInt = vKey.getChapter();
+	Tcl_DictObjPut(interp, eref, Tcl_NewStringObj(tmpKey, strlen(tmpKey)), Tcl_NewIntObj(tmpInt));
+
+	tmpKey = "Verse";
+	tmpInt = vKey.getVerse();
+	Tcl_DictObjPut(interp, eref, Tcl_NewStringObj(tmpKey, strlen(tmpKey)), Tcl_NewIntObj(tmpInt));
+
+	// add the ERef to the output dictionary
+	tmpKey = "ERef";
+	Tcl_DictObjPut(interp, d, Tcl_NewStringObj(tmpKey, strlen(tmpKey)), eref);
+}
+
+static
 int getVerseCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const objv[])
 {
 	if (objc < 3)
@@ -79,6 +110,7 @@ int getVerseCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const o
 		Tcl_Obj *entry = Tcl_NewDictObj();
 		Tcl_DictObjPut(interp, entry, Tcl_NewStringObj(keyRef, strlen(keyRef)),
 		    Tcl_NewStringObj(valRef, strlen(valRef)));
+		addERef(l, interp, entry);
 		Tcl_DictObjPut(interp, entry, Tcl_NewStringObj(keyTxt, strlen(keyTxt)),
 		    Tcl_NewStringObj(valTxt, strlen(valTxt)));
 
@@ -145,7 +177,7 @@ int setDictCmd(ClientData cdata, Tcl_Interp *interp, int objc, Tcl_Obj *const ob
 
 extern "C" int Tclsword_Init(Tcl_Interp *interp)
 {
-	Tcl_Namespace *ns = Tcl_CreateNamespace(interp, "sword", NULL, NULL);
+	//Tcl_Namespace *ns = Tcl_CreateNamespace(interp, "sword", NULL, NULL);
 
 	SwordData *data = new SwordData;
 
