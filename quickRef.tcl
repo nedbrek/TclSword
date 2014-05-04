@@ -14,23 +14,28 @@ proc getModNames {type} {
 	return $ret
 }
 
+set xmlOut ""
+proc xmlTextCB {txt} {
+	set lastChar [string index $::xmlOut end]
+	set firstChar [string index $txt 0]
+	if {$lastChar ne " " && ![string is punct $firstChar]} {
+		append ::xmlOut " "
+	}
+	append ::xmlOut $txt
+}
+
 proc stripHtml {t} {
 	if {[string first "<" $t] == -1} {
 		return $t
 	}
 
-	set ret ""
+	xml::parser p -characterdatacommand xmlTextCB
 
-	set doc [dom parse -html "<body>$t</body>"]
-	set root [$doc firstChild]
-	foreach n [$root childNodes] {
-		if {[$n nodeType] eq "TEXT_NODE"} {
-			append ret [$n asText]
-		}
-	}
+	set ::xmlOut ""
+	p parse "<body>$t</body>"
 
-	$doc delete
-	return $ret
+	p free
+	return $::xmlOut
 }
 
 ### gui
