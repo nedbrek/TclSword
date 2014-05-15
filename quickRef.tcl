@@ -43,7 +43,7 @@ pack [ttk::combobox .cbVersions -state readonly -values [getModNames "Biblical T
 
 pack [entry .eRef] -side top
 
-pack [text .tResults -wrap word] -side top
+pack [text .tResults -wrap word] -side top -expand 1 -fill both
 
 bind .eRef <Return> {
 	set ver [.cbVersions get]
