@@ -39,11 +39,19 @@ proc stripHtml {t} {
 }
 
 ### gui
-pack [ttk::combobox .cbVersions -state readonly -values [getModNames "Biblical Texts"]] -side top
+wm title . "Quick Reference"
+grid [ttk::combobox .cbVersions -state readonly -values [getModNames "Biblical Texts"]] -row 0
 
-pack [entry .eRef] -side top
+grid [entry .eRef] -row 1
 
-pack [text .tResults -wrap word] -side top -expand 1 -fill both
+scrollbar .scrollV -orient vert -command ".tResults yview"
+text .tResults -wrap word -yscrollcommand ".scrollV set"
+
+grid .tResults -sticky nswe -row 2 -column 0
+grid .scrollV -sticky ns -row 2 -column 1
+
+grid rowconfigure . .tResults -weight 1
+grid columnconfigure . .tResults -weight 1
 
 bind .eRef <Return> {
 	set ver [.cbVersions get]
